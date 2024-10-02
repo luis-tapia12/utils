@@ -2,6 +2,11 @@ package com.jcontrerast.utils;
 
 import com.jcontrerast.utils.dto.PageFilterDTO;
 import com.jcontrerast.utils.exception.AssertionException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,8 +15,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UtilsTest {
     @ParameterizedTest
@@ -54,6 +58,32 @@ public class UtilsTest {
         assertThrows(AssertionException.class, () -> Utils.getPageable(filter));
     }
 
+    @Test
+    void testCopyNotNull() {
+        TestObject source = new TestObject("VALUE1", null, "VALUE3");
+        TestObject target = new TestObject(null, "VALUE2", null);
+        TestObject empty = new TestObject();
+
+        Utils.copyNotNull(source, target);
+        Utils.copyNotNull(source, empty);
+
+        assertEquals("VALUE1", target.getField1());
+        assertEquals("VALUE2", target.getField2());
+        assertEquals("VALUE3", target.getField3());
+
+        assertEquals("VALUE1", empty.getField1());
+        assertNull(empty.getField2());
+        assertEquals("VALUE3", empty.getField3());
+    }
+
+    @Test
+    void testCopyNotNull_fails() {
+        TestObject object = new TestObject("VALUE1", "VALUE2", "VALUE3");
+        assertThrows(AssertionException.class, () -> Utils.copyNotNull(null, null));
+        assertThrows(AssertionException.class, () -> Utils.copyNotNull(object, null));
+        assertThrows(AssertionException.class, () -> Utils.copyNotNull(null, object));
+    }
+
     static Stream<Arguments> testGetPageable() {
         return Stream.of(
                 Arguments.of(0, 10, "column1", "ASC"),
@@ -74,5 +104,15 @@ public class UtilsTest {
                 Arguments.of(0, 0, "column1", "asc"),
                 Arguments.of(0, Integer.MAX_VALUE, "column1", "desc")
         );
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class TestObject {
+        private String field1;
+        private String field2;
+        private String field3;
     }
 }
