@@ -11,7 +11,10 @@ import java.util.Optional;
 
 public class Utils {
     public static Pageable getPageable(PageFilterDTO filter) {
-        Assertions.isNotNull(filter);
+        if (filter == null) {
+            return PageRequest.of(Constants.DEFAULT_PAGE_NUMBER, Constants.DEFAULT_PAGE_SIZE);
+        }
+
         short pageNumber = Optional.ofNullable(filter.getPageNumber()).orElse(Constants.DEFAULT_PAGE_NUMBER);
         short pageSize = Optional.ofNullable(filter.getPageSize()).orElse(Constants.DEFAULT_PAGE_SIZE);
 
