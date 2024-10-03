@@ -2,12 +2,11 @@ package com.jcontrerast.utils.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import org.hibernate.validator.internal.constraintvalidators.hv.NotBlankValidator;
 
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = NotBlankValidator.class)
+@Constraint(validatedBy = NullableNotBlankValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NullableNotBlank {
