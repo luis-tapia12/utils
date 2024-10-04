@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class UtilsTest {
+class UtilsTest {
     @ParameterizedTest
     @MethodSource
     void testGetPageable(
@@ -39,6 +39,15 @@ public class UtilsTest {
         assertEquals(isSorted, response.getSort().isSorted());
         assertEquals(Objects.requireNonNullElse(pageNumber, Constants.DEFAULT_PAGE_NUMBER).intValue(), response.getPageNumber());
         assertEquals(Objects.requireNonNullElse(pageSize, Constants.DEFAULT_PAGE_SIZE).intValue(), response.getPageSize());
+    }
+
+    @Test
+    void testGetPageable_whenFilterIsNull() {
+        Pageable response = Utils.getPageable(null);
+
+        assertFalse(response.getSort().isSorted());
+        assertEquals(Constants.DEFAULT_PAGE_NUMBER, response.getPageNumber());
+        assertEquals(Constants.DEFAULT_PAGE_SIZE, response.getPageSize());
     }
 
     @ParameterizedTest
