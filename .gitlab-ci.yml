@@ -1,0 +1,16 @@
+image: maven:3.8.5-openjdk-17
+pages:
+  script:
+    - mvn javadoc:javadoc -DskipTests
+    - mkdir -p public
+    - mv target/reports/apidocs/* public/
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+deploy:
+  script:
+    - 'mvn deploy -s ci_settings.xml'
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
